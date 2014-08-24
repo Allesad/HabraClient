@@ -1,0 +1,27 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.allesad.habraclient.fragments.posts.PostContentFragment"
+    >
+
+    <ProgressBar
+        android:id="@+id/postView_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        style="@android:style/Widget.Holo.ProgressBar.Large"
+        android:visibility="visible"
+        />
+
+    <com.allesad.habraclient.components.WebViewExtended
+        android:id="@+id/postView_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+    </com.allesad.habraclient.components.WebViewExtended>
+
+
+</LinearLayout>

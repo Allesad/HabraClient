@@ -1,0 +1,10 @@
+<resources>
+
+    <color name="black_overlay">#66000000</color>
+    <color name="light_text_color">#FF777777</color>
+
+    <!-- RATING -->
+    <color name="rating_negative">#cc0000</color>
+    <color name="rating_positive">#339900</color>
+
+</resources>
