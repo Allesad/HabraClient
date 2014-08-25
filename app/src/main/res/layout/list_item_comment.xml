@@ -1,79 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingLeft="8dp"
-    android:paddingRight="8dp"
-    android:paddingTop="4dp"
-    android:paddingBottom="4dp"
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp"
+    android:elevation="2dp"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:stateListAnimator="@anim/button_raise"
     >
 
-    <ImageView
-        android:id="@+id/commentView_avatar"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="4dp"
-        android:layout_marginBottom="4dp"
-        android:src="@drawable/ic_launcher"
-        />
-
-    <TextView
-        android:id="@+id/commentView_author"
-        android:layout_width="wrap_content"
-        android:layout_height="16dp"
-        android:layout_alignTop="@id/commentView_avatar"
-        android:layout_toRightOf="@id/commentView_avatar"
-        android:gravity="center_vertical"
-        android:textStyle="bold"
-        android:textSize="@dimen/font_size_small"
-        android:text="alizar"
-        />
-
-    <TextView
-        android:id="@+id/commentView_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/commentView_author"
-        android:layout_toRightOf="@id/commentView_avatar"
-        android:layout_alignBottom="@id/commentView_avatar"
-        android:gravity="center_vertical"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="@dimen/font_size_small"
-        android:text="10 апреля 2014 в 23:05"
-        />
-
-    <TextView
-        android:id="@+id/commentView_rating"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@id/commentView_avatar"
-        android:layout_alignBottom="@id/commentView_avatar"
-        android:gravity="center_vertical"
-        android:textColor="@android:color/holo_green_light"
-        android:textSize="@dimen/font_size_medium"
-        android:text="+21"
-        />
-
-    <TextView
-        android:id="@+id/commentView_content"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/commentView_avatar"
-        android:textSize="@dimen/font_size_medium"
-        android:textColor="@color/light_text_color"
-        android:text="У меня опыта разработки под Android всего два месяца, поэтому могу порой принимать странные решения. :) Спасибо за объяснение, посмотрю в сторону Picasso и других библиотек."
-        />
+        android:layout_height="match_parent"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        >
 
-    <com.allesad.habraclient.components.WebViewExtended
-        android:id="@+id/commentView_full_content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/commentView_avatar"
-        android:visibility="gone"
-        />
+        <ImageView
+            android:id="@+id/commentView_avatar"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
+            android:src="@drawable/ic_launcher"
+            android:contentDescription=""
+            android:elevation="5dp"
+            />
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/commentView_author"
+            android:layout_width="wrap_content"
+            android:layout_height="16dp"
+            android:layout_alignTop="@id/commentView_avatar"
+            android:layout_toEndOf="@id/commentView_avatar"
+            android:gravity="center_vertical"
+            android:textStyle="bold"
+            android:textSize="@dimen/font_size_small"
+            android:text="alizar"
+            />
+
+        <TextView
+            android:id="@+id/commentView_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/commentView_author"
+            android:layout_toEndOf="@id/commentView_avatar"
+            android:layout_alignBottom="@id/commentView_avatar"
+            android:gravity="center_vertical"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="@dimen/font_size_small"
+            android:text="10 апреля 2014 в 23:05"
+            />
+
+        <TextView
+            android:id="@+id/commentView_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@id/commentView_avatar"
+            android:layout_alignBottom="@id/commentView_avatar"
+            android:gravity="center_vertical"
+            android:textColor="@android:color/holo_green_light"
+            android:textSize="@dimen/font_size_medium"
+            android:text="+21"
+            />
+
+        <TextView
+            android:id="@+id/commentView_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/commentView_avatar"
+            android:textSize="@dimen/font_size_medium"
+            android:textColor="@color/light_text_color"
+            android:text="У меня опыта разработки под Android всего два месяца, поэтому могу порой принимать странные решения. :) Спасибо за объяснение, посмотрю в сторону Picasso и других библиотек."
+            />
+
+        <com.allesad.habraclient.components.WebViewExtended
+            android:id="@+id/commentView_full_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/commentView_avatar"
+            android:visibility="gone"
+            />
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

@@ -24,13 +24,6 @@
         android:visibility="gone"
         />
 
-    <!--<it.gmariotti.cardslib.library.view.CardView
-        android:id="@+id/ssanoe_govno"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        card:card_layout_resourceID="@layout/list_item_post_card"
-        />-->
-
     <TextView
         android:id="@android:id/empty"
         android:layout_width="match_parent"

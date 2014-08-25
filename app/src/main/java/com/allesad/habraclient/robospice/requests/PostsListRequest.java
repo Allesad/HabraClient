@@ -33,18 +33,6 @@ public class PostsListRequest extends SpiceRequest<PostsListResponse> {
             return null;
         }
 
-        // TODO: replace with actual request
-        /*for (int i = 0; i < 10; i++){
-            PostListItemData post = new PostListItemData();
-            post.setTitle("Title " + i);
-            post.setAuthor("Author " + i);
-            post.setHubs("Android, Mobile Development");
-            if ((i % 2) == 0){
-                post.setImage("http://habrastorage.org/getpro/habr/post_images/4f1/7ab/88b/4f17ab88b556d72cf5901f4f873d89e7.jpg");
-            }
-            response.add(post);
-        }*/
-
         return response;
     }
 }

@@ -124,12 +124,16 @@ public class WebViewExtended extends WebView {
         Elements images = document.select("img");
 
         for (Element image : images){
-            String url = image.attr("src");
-            url = url.replace("habrastorage.org", "beta.hstor.org");
+            image.setBaseUri("http://beta.hstor.org/");
+            String url = image.absUrl("src");
+            url = url.replace("http://habrastorage.org", "http://beta.hstor.org");
+            Logger.v("Image URL: " + url);
+            image.attr("src", url);
             if (!TextUtils.isEmpty(url)){
                 mImagePaths.add(url);
             }
         }
+        Logger.v("Content: " + document.body().html());
 
         // Find all youtube frames on the page and replace them with video preview
         Elements iframes = document.select("iframe");
@@ -219,11 +223,15 @@ public class WebViewExtended extends WebView {
             if (url.endsWith("png") || url.endsWith("jpg") || url.endsWith("jpeg") || url.endsWith("gif")){
                 try{
                     File cacheDir   = StorageUtils.getCacheDirectory(mContext);
+                    //url = url.replace("file://", "http://");
                     String fileName = String.valueOf(url.hashCode());
                     File imageFile  = new File(cacheDir, fileName);
                     if (!imageFile.exists()){
                         cacheDir    = StorageUtils.getIndividualCacheDirectory(mContext);
                         imageFile = new File(cacheDir, fileName);
+                    }
+                    if (!imageFile.exists()){
+                        return super.shouldInterceptRequest(view, url);
                     }
                     InputStream is  = new FileInputStream(imageFile);
                     Logger.v("Load image from cache. Is: " + is.toString());

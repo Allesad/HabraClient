@@ -11,15 +11,21 @@
         android:layout_height="match_parent"
         style="@android:style/Widget.Holo.Light.ProgressBar.Large"
         android:layout_gravity="center"
-        />
+        android:visibility="visible"/>
 
-    <ListView
-        android:id="@+id/commentsView_list"
+    <android.support.v7.widget.RecyclerView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
+    <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone">
-
-    </ListView>
+        android:text="Elevation"
+        android:elevation="@dimen/button_elevation"
+        android:stateListAnimator="@anim/button_raise"
+        android:visibility="visible" />
 
     <TextView
         android:id="@android:id/empty"

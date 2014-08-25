@@ -1,6 +1,5 @@
 package com.allesad.habraclient.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.transition.Explode;
 import android.view.MotionEvent;
@@ -8,36 +7,41 @@ import android.view.View;
 import android.view.Window;
 import android.webkit.WebView;
 
-import com.allesad.habraclient.HabraClientApplication;
 import com.allesad.habraclient.R;
 import com.allesad.habraclient.adapters.posts.PostContentPagerAdapter;
 import com.allesad.habraclient.components.ViewPagerExtended;
 import com.allesad.habraclient.components.WebViewExtended;
-import com.allesad.habraclient.fragments.posts.PostContentFragment;
+import com.allesad.habraclient.events.PostEvent;
 import com.allesad.habraclient.helpers.IntentHelper;
-import com.allesad.habraclient.interfaces.IPostDataProvider;
 import com.allesad.habraclient.interfaces.ISpiceManagerProvider;
 import com.allesad.habraclient.model.posts.PostContentData;
 import com.allesad.habraclient.robospice.requests.posts.PostContentRequest;
 import com.allesad.habraclient.robospice.response.posts.PostContentResponse;
 import com.allesad.habraclient.utils.ArgumentConstants;
-import com.allesad.habraclient.utils.BroadcastConstants;
 import com.allesad.habraclient.utils.DialogUtil;
-import com.allesad.habraclient.utils.Logger;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 
 import java.util.ArrayList;
 
+import de.greenrobot.event.EventBus;
+
 /**
  * Created by Allesad on 09.04.2014.
  */
 public class PostContentActivity extends BaseActivity implements ISpiceManagerProvider,
-        View.OnTouchListener, WebViewExtended.OnScrollListener, IPostDataProvider {
-
+        View.OnTouchListener, WebViewExtended.OnScrollListener
+{
+    //=============================================================
+    // Constants
+    //=============================================================
     private final static String KEY_FULLSCREEN = "fullscreen";
     private final static String KEY_POST_DATA = "postData";
+
+    //=============================================================
+    // Variables
+    //=============================================================
 
     private View mDecorView;
 
@@ -46,17 +50,18 @@ public class PostContentActivity extends BaseActivity implements ISpiceManagerPr
     private boolean mFullscreen;
     private float mLastX;
     private float mLastY;
+    
+    //=============================================================
+    // Activity lifecycle
+    //=============================================================
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-
         setContentView(R.layout.view_content);
 
         getWindow().setBackgroundDrawableResource(R.drawable.content_bg_light);
-        getWindow().setExitTransition(new Explode());
 
         mDecorView = getWindow().getDecorView();
 
@@ -94,11 +99,6 @@ public class PostContentActivity extends BaseActivity implements ISpiceManagerPr
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
 
@@ -108,11 +108,19 @@ public class PostContentActivity extends BaseActivity implements ISpiceManagerPr
             showSystemUI();
         }
     }
+    
+    //=============================================================
+    // ISpiceManagerProvider
+    //=============================================================
 
     @Override
     public SpiceManager getSpiceManager() {
         return mSpiceManager;
     }
+    
+    //=============================================================
+    // View.OnTouchListener
+    //=============================================================
 
     @Override
     public boolean onTouch(View view, MotionEvent event) {
@@ -140,7 +148,7 @@ public class PostContentActivity extends BaseActivity implements ISpiceManagerPr
                             String url = hr.getExtra();
                             if (url != null && url.length() > 0){
                                 ArrayList<String> imagePaths = (ArrayList<String>) ((WebViewExtended) view).getImagePaths();
-                                String selectedImage = url.replace("habrastorage.org", "beta.hstor.org");
+                                String selectedImage = url.replace("//habrastorage.org", "http://beta.hstor.org");
                                 IntentHelper.toPostGalleryScreen(PostContentActivity.this, imagePaths, selectedImage);
                                 return true;
                             }
@@ -158,6 +166,10 @@ public class PostContentActivity extends BaseActivity implements ISpiceManagerPr
         }
         return false;
     }
+    
+    //=============================================================
+    // WebViewExtended.OnScrollListener
+    //=============================================================
 
     @Override
     public void onScroll(int l, int t, int oldl, int oldt) {
@@ -169,11 +181,10 @@ public class PostContentActivity extends BaseActivity implements ISpiceManagerPr
             hideSystemUI();
         }
     }
-
-    @Override
-    public PostContentData getPost() {
-        return mPost;
-    }
+    
+    //=============================================================
+    // Private methods
+    //=============================================================
 
     private void hideSystemUI(){
         mDecorView.setSystemUiVisibility(
@@ -197,8 +208,12 @@ public class PostContentActivity extends BaseActivity implements ISpiceManagerPr
 
     private void triggerContentUpdate(){
         // Trigger update in view pager fragments
-        HabraClientApplication.localBroadcastManager.sendBroadcast(new Intent(BroadcastConstants.POST_DATA_UPDATE));
+        EventBus.getDefault().post(new PostEvent(mPost));
     }
+    
+    //=============================================================
+    // PostContentRequestListener
+    //=============================================================
 
     private class PostContentRequestListener implements RequestListener<PostContentResponse> {
 

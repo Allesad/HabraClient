@@ -68,9 +68,6 @@ public abstract class BasePostsListFragment extends BaseSpicedFragment implement
         mPullToRefreshLayout = (PullToRefreshLayout) view.findViewById(R.id.baseView_ptr_layout);
         mList = (CardListView) view.findViewById(R.id.baseView_list);
         mList.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), true, true, this));
-
-        TextView emptyView = (TextView) view.findViewById(android.R.id.empty);
-        mList.setEmptyView(emptyView);
     }
 
     @Override
@@ -192,6 +189,11 @@ public abstract class BasePostsListFragment extends BaseSpicedFragment implement
             }
             mPosts.addAll(newPosts);
             mAdapter.notifyDataSetChanged();
+
+            if (mList.getEmptyView() == null && getView() != null){
+                TextView emptyView = (TextView) getView().findViewById(android.R.id.empty);
+                mList.setEmptyView(emptyView);
+            }
         }
     }
 }
