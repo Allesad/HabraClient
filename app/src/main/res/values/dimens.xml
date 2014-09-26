@@ -11,10 +11,12 @@
 
     <dimen name="post_content_padding">16dp</dimen>
 
+    <dimen name="comment_default_left_margin">8dp</dimen>
+    <dimen name="comment_left_margin_step">8dp</dimen>
+
     <!-- Per the design guidelines, navigation drawers should be between 240dp and 320dp:
      https://developer.android.com/design/patterns/navigation-drawer.html -->
     <dimen name="navigation_drawer_width">240dp</dimen>
-
 
     <dimen name="button_elevation">2dp</dimen>
     <dimen name="button_press_elevation">10dp</dimen>

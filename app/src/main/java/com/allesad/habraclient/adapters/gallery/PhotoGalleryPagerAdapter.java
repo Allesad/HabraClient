@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.allesad.habraclient.R;
-import com.allesad.habraclient.components.TouchImageView;
+import com.allesad.habraclient.components.views.TouchImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;

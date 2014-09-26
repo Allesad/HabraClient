@@ -22,7 +22,7 @@ import com.allesad.habraclient.R;
 import com.allesad.habraclient.adapters.MainMenuAdapter;
 import com.allesad.habraclient.model.menu.MainMenuItem;
 import com.allesad.habraclient.utils.Enums;
-import com.allesad.habraclient.utils.Preferences;
+import com.allesad.habraclient.utils.PrefsHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +68,7 @@ public class NavigationDrawerFragment extends Fragment {
 
         // Read in the flag indicating whether or not the user has demonstrated awareness of the
         // drawer.
-        mUserLearnedDrawer = Preferences.getInstance(getActivity()).getUserLearnedDrawer();
+        mUserLearnedDrawer = PrefsHelper.get().getUserLearnedDrawer();
 
         if (savedInstanceState != null) {
             mCurrentSelectedPosition = savedInstanceState.getInt(MENU_SELECTED_POSITION);
@@ -163,7 +163,7 @@ public class NavigationDrawerFragment extends Fragment {
                     // The user manually opened the drawer; store this flag to prevent auto-showing
                     // the navigation drawer automatically in the future.
                     mUserLearnedDrawer = true;
-                    Preferences.getInstance(getActivity()).setUserLearnedDrawer(mUserLearnedDrawer);
+                    PrefsHelper.get().setUserLearnedDrawer(mUserLearnedDrawer);
                 }
 
                 getActivity().invalidateOptionsMenu(); // calls onPrepareOptionsMenu()

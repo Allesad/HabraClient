@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.allesad.habraclient.interfaces.models.posts.IPost;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import it.gmariotti.cardslib.library.internal.CardThumbnail;
@@ -13,9 +14,9 @@ import it.gmariotti.cardslib.library.internal.CardThumbnail;
  */
 public class PostCardThumb extends CardThumbnail {
 
-    private PostListItemData mPost;
+    private IPost mPost;
 
-    public PostCardThumb(Context context, PostListItemData post) {
+    public PostCardThumb(Context context, IPost post) {
         super(context);
 
         mPost = post;
@@ -24,7 +25,7 @@ public class PostCardThumb extends CardThumbnail {
     @Override
     public void setupInnerViewElements(ViewGroup parent, View imageView) {
         if (mPost != null){
-            ImageLoader.getInstance().displayImage(mPost.getImage(), (android.widget.ImageView) imageView);
+            ImageLoader.getInstance().displayImage(mPost.getPost_titleImage(), (android.widget.ImageView) imageView);
         }
     }
 }

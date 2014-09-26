@@ -1,16 +1,15 @@
 package com.allesad.habraclient.activities;
 
+import android.app.ActionBar;
 import android.os.Bundle;
-import android.transition.Explode;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.webkit.WebView;
 
 import com.allesad.habraclient.R;
 import com.allesad.habraclient.adapters.posts.PostContentPagerAdapter;
 import com.allesad.habraclient.components.ViewPagerExtended;
-import com.allesad.habraclient.components.WebViewExtended;
+import com.allesad.habraclient.components.views.WebViewExtended;
 import com.allesad.habraclient.events.PostEvent;
 import com.allesad.habraclient.helpers.IntentHelper;
 import com.allesad.habraclient.interfaces.ISpiceManagerProvider;
@@ -59,6 +58,11 @@ public class PostContentActivity extends BaseActivity implements ISpiceManagerPr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null){
+            actionBar.hide();
+        }
+
         setContentView(R.layout.view_content);
 
         getWindow().setBackgroundDrawableResource(R.drawable.content_bg_light);
@@ -75,14 +79,14 @@ public class PostContentActivity extends BaseActivity implements ISpiceManagerPr
             hideSystemUI();
         }
 
-        int postId = getIntent().getExtras().getInt(ArgumentConstants.POST_ID);
+        int postId = (int) getIntent().getExtras().getLong(ArgumentConstants.POST_ID);
         if (mPost == null){
             getSpiceManager().execute(new PostContentRequest(postId), new PostContentRequestListener());
         }else{
             triggerContentUpdate();
         }
 
-        PostContentPagerAdapter adapter = new PostContentPagerAdapter(getSupportFragmentManager());
+        PostContentPagerAdapter adapter = new PostContentPagerAdapter(getSupportFragmentManager(), mPost);
         ViewPagerExtended pager = (ViewPagerExtended) findViewById(R.id.pager);
         pager.setAdapter(adapter);
 
@@ -107,6 +111,19 @@ public class PostContentActivity extends BaseActivity implements ISpiceManagerPr
         }else{
             showSystemUI();
         }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            mDecorView.setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);}
     }
     
     //=============================================================
@@ -187,23 +204,23 @@ public class PostContentActivity extends BaseActivity implements ISpiceManagerPr
     //=============================================================
 
     private void hideSystemUI(){
-        mDecorView.setSystemUiVisibility(
+        /*mDecorView.setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
                         | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
                         | View.SYSTEM_UI_FLAG_IMMERSIVE);
-        mFullscreen = true;
+        mFullscreen = true;*/
     }
 
     private void showSystemUI(){
-        mDecorView.setSystemUiVisibility(
+        /*mDecorView.setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
-        mFullscreen = false;
+        mFullscreen = false;*/
     }
 
     private void triggerContentUpdate(){

@@ -8,13 +8,13 @@
  * Extends Android ImageView to include pinch zooming, panning, fling and double tap zoom.
  */
 
-package com.allesad.habraclient.components;
+package com.allesad.habraclient.components.views;
 
-import static com.allesad.habraclient.components.TouchImageView.State.ANIMATE_ZOOM;
-import static com.allesad.habraclient.components.TouchImageView.State.DRAG;
-import static com.allesad.habraclient.components.TouchImageView.State.FLING;
-import static com.allesad.habraclient.components.TouchImageView.State.NONE;
-import static com.allesad.habraclient.components.TouchImageView.State.ZOOM;
+import static com.allesad.habraclient.components.views.TouchImageView.State.ANIMATE_ZOOM;
+import static com.allesad.habraclient.components.views.TouchImageView.State.DRAG;
+import static com.allesad.habraclient.components.views.TouchImageView.State.FLING;
+import static com.allesad.habraclient.components.views.TouchImageView.State.NONE;
+import static com.allesad.habraclient.components.views.TouchImageView.State.ZOOM;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;

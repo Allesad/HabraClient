@@ -1,5 +1,7 @@
 package com.allesad.habraclient.fragments.posts;
 
+import com.allesad.habraclient.utils.Enums;
+
 /**
  * Created by Allesad on 26.03.2014.
  */
@@ -11,6 +13,11 @@ public class PostsBestFragment extends BasePostsListFragment {
 
     public PostsBestFragment(){
         mPage = 1;
+    }
+
+    @Override
+    protected Enums.PostsListType getType() {
+        return null;
     }
 
     @Override

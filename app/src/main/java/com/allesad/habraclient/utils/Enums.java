@@ -9,4 +9,11 @@ public class Enums {
         POSTS, HUBS, QUESTIONS, EVENTS, COMPANIES, USERS
     }
 
+    public enum RefreshType {
+        FROM_TOP, FROM_BOTTOM
+    }
+
+    public enum PostsListType {
+        INTERESTING, ALL
+    }
 }

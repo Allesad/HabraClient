@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.allesad.habraclient.R;
 import com.allesad.habraclient.fragments.posts.PostsContainerFragment;
-import com.allesad.habraclient.fragments.posts.PostsThematicFragment;
 import com.allesad.habraclient.interfaces.ISpiceManagerProvider;
 import com.allesad.habraclient.utils.Enums;
 import com.octo.android.robospice.SpiceManager;

@@ -8,6 +8,8 @@ import android.net.ConnectivityManager;
  */
 public class Utils {
 
+    public final static String CLIENT_ID = "05329ae5cc5bbb2.88812457";
+    public final static String TOKEN = "a2c91e82f808bd509bbf064319cabc41964bbe78";
     public final static boolean DEBUG = true;
 
     public static boolean hasInternetConnection(Context context) {
@@ -32,7 +34,10 @@ public class Utils {
         return arTostr.toString();
     }
 
-    public static String parseRating(int rating){
+    public static String parseRating(Integer rating){
+        if (rating == null){
+            return "-";
+        }
         String ratingText;
         if (rating > 0){
             ratingText = "+" + rating;

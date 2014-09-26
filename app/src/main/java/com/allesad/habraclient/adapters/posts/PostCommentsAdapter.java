@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.allesad.habraclient.R;
 import com.allesad.habraclient.components.HtmlTagHandler;
-import com.allesad.habraclient.components.WebViewExtended;
+import com.allesad.habraclient.components.views.WebViewExtended;
 import com.allesad.habraclient.model.posts.CommentListItemData;
 import com.allesad.habraclient.utils.Utils;
 import com.nostra13.universalimageloader.core.ImageLoader;

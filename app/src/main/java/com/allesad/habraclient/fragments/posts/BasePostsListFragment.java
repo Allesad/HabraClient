@@ -9,40 +9,38 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.allesad.habraclient.R;
+import com.allesad.habraclient.database.models.posts.Post;
+import com.allesad.habraclient.events.PostsListEvent;
 import com.allesad.habraclient.fragments.BaseSpicedFragment;
 import com.allesad.habraclient.model.posts.PostCard;
-import com.allesad.habraclient.model.posts.PostListItemData;
-import com.allesad.habraclient.robospice.requests.PostsListRequest;
-import com.allesad.habraclient.robospice.response.posts.PostsListResponse;
-import com.allesad.habraclient.utils.DialogUtil;
+import com.allesad.habraclient.robospice.listeners.PostsRequestListener;
+import com.allesad.habraclient.robospice.requests.posts.PostsListRequest;
+import com.allesad.habraclient.utils.Enums.PostsListType;
+import com.allesad.habraclient.utils.Enums.RefreshType;
 import com.allesad.habraclient.utils.Logger;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
-import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.octo.android.robospice.request.listener.RequestListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
 import it.gmariotti.cardslib.library.view.CardListView;
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
 import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
+import uk.co.senab.actionbarpulltorefresh.library.viewdelegates.ViewDelegate;
 
 /**
  * Created by Allesad on 23.03.2014.
  */
-public abstract class BasePostsListFragment extends BaseSpicedFragment implements OnRefreshListener, AbsListView.OnScrollListener {
-
-    private enum RefreshType {
-        FROM_TOP, FROM_BOTTOM
-    }
-
-    protected abstract String getUrl();
-    protected abstract int getPage();
-    protected abstract void setPage(int page);
+public abstract class BasePostsListFragment extends BaseSpicedFragment implements OnRefreshListener, AbsListView.OnScrollListener
+{
+    //=============================================================
+    // Variables
+    //=============================================================
 
     private ProgressBar mProgressBar;
     private PullToRefreshLayout mPullToRefreshLayout;
@@ -54,6 +52,19 @@ public abstract class BasePostsListFragment extends BaseSpicedFragment implement
     private boolean mIsLoading;
     private boolean mHasMorePosts = true;
     private RefreshType mRefreshType;
+
+    //=============================================================
+    // Abstract methods
+    //=============================================================
+
+    protected abstract PostsListType getType();
+    protected abstract String getUrl();
+    protected abstract int getPage();
+    protected abstract void setPage(int page);
+
+    //=============================================================
+    // Fragment lifecycle
+    //=============================================================
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -79,16 +90,39 @@ public abstract class BasePostsListFragment extends BaseSpicedFragment implement
         ActionBarPullToRefresh.from(getActivity())
                 .allChildrenArePullable()
                 .listener(this)
+                .useViewDelegate(TextView.class, new ViewDelegate() {
+                    @Override
+                    public boolean isReadyForPull(View view, float x, float y) {
+                        return Boolean.TRUE;
+                    }
+                })
                 .setup(mPullToRefreshLayout);
 
         setUpList();
+        // TODO: add load posts from cache
         requestPosts(RefreshType.FROM_TOP);
     }
 
     @Override
-    public void onScrollStateChanged(AbsListView absListView, int i) {
+    public void onResume() {
+        super.onResume();
 
+        EventBus.getDefault().register(this);
     }
+
+    @Override
+    public void onPause() {
+        EventBus.getDefault().unregister(this);
+
+        super.onPause();
+    }
+
+    //=============================================================
+    // AbsListView.OnScrollListener
+    //=============================================================
+
+    @Override
+    public void onScrollStateChanged(AbsListView absListView, int i) {}
 
     @Override
     public void onScroll(AbsListView absListView, int firstVisible, int visibleCount, int totalCount) {
@@ -102,6 +136,10 @@ public abstract class BasePostsListFragment extends BaseSpicedFragment implement
         }
     }
 
+    //=============================================================
+    // OnRefreshListener
+    //=============================================================
+
     @Override
     public void onRefreshStarted(View view) {
         if (mIsLoading){
@@ -111,6 +149,60 @@ public abstract class BasePostsListFragment extends BaseSpicedFragment implement
         }
     }
 
+    //=============================================================
+    // Event listeners
+    //=============================================================
+
+    public void onEvent(PostsListEvent event){
+        Logger.v("Event type: " + event.getType() + ", current type: " + getType());
+        if (event.getType() != getType()){
+            return;
+        }
+        mProgressBar.setVisibility(View.GONE);
+        mPullToRefreshLayout.setRefreshComplete();
+        mIsLoading = false;
+        List<Post> posts = event.getData();
+        if (posts == null){
+            return;
+        }
+        if (posts.size() < 10){
+            mHasMorePosts = false;
+        }
+
+        List<PostCard> newPosts = new ArrayList<PostCard>();
+        for (Post post : posts){
+            PostCard card = new PostCard(getActivity(), post);
+
+            // Replace post card if it is already exists in the list
+            boolean alreadyExist = false;
+            if (mRefreshType == RefreshType.FROM_BOTTOM){
+                for (Card postCard : mPosts){
+                    if (((PostCard) postCard).getPostId() == post.getPost_id()){
+                        mPosts.set(mPosts.indexOf(postCard), card);
+                        alreadyExist = true;
+                    }
+                }
+            }
+            if (!alreadyExist){
+                newPosts.add(card);
+            }
+        }
+        if (mRefreshType == RefreshType.FROM_TOP){
+            mPosts.clear();
+        }
+        mPosts.addAll(newPosts);
+        mAdapter.notifyDataSetChanged();
+
+        if (mList.getEmptyView() == null && getView() != null){
+            TextView emptyView = (TextView) getView().findViewById(android.R.id.empty);
+            mList.setEmptyView(emptyView);
+        }
+    }
+
+    //=============================================================
+    // Private methods
+    //=============================================================
+
     private void setUpList(){
         if (mPosts == null){
             mPosts = new ArrayList<Card>();
@@ -119,7 +211,6 @@ public abstract class BasePostsListFragment extends BaseSpicedFragment implement
             mAdapter = new CardArrayAdapter(getActivity(), mPosts);
         }
         mList.setAdapter(mAdapter);
-        //mList.setOnScrollListener(this);
     }
 
     private void requestPosts(RefreshType refreshType){
@@ -134,66 +225,9 @@ public abstract class BasePostsListFragment extends BaseSpicedFragment implement
                     setPage(getPage() + 1);
                     break;
             }
-            Logger.v("Request posts. Type: " + refreshType + ". Page: " + getPage());
-            getSpiceManager().execute(new PostsListRequest(getUrl(), getPage()), new PostsListRequestListener());
+            getSpiceManager().execute(new PostsListRequest(getUrl(), getPage()), new PostsRequestListener(getType()));
             mRefreshType = refreshType;
             mIsLoading = true;
-        }
-    }
-
-    private class PostsListRequestListener implements RequestListener<PostsListResponse> {
-
-        @Override
-        public void onRequestFailure(SpiceException spiceException) {
-            if (getActivity() != null){
-                mProgressBar.setVisibility(View.GONE);
-                mPullToRefreshLayout.setRefreshComplete();
-                mIsLoading = false;
-                DialogUtil.showAlertDialog(getActivity(), spiceException.getMessage());
-            }
-        }
-
-        @Override
-        public void onRequestSuccess(PostsListResponse response) {
-            if (getActivity() == null || response == null){
-                return;
-            }
-
-            mProgressBar.setVisibility(View.GONE);
-            mPullToRefreshLayout.setRefreshComplete();
-            mIsLoading = false;
-            if (response.size() < 10){
-                mHasMorePosts = false;
-            }
-
-            List<PostCard> newPosts = new ArrayList<PostCard>();
-            for (PostListItemData post : response){
-                PostCard card = new PostCard(getActivity(), post);
-
-                // Replace post card if it is already exists in the list
-                boolean alreadyExist = false;
-                if (mRefreshType == RefreshType.FROM_BOTTOM){
-                    for (Card postCard : mPosts){
-                        if (((PostCard) postCard).getPostId() == post.getId()){
-                            mPosts.set(mPosts.indexOf(postCard), card);
-                            alreadyExist = true;
-                        }
-                    }
-                }
-                if (!alreadyExist){
-                    newPosts.add(card);
-                }
-            }
-            if (mRefreshType == RefreshType.FROM_TOP){
-                mPosts.clear();
-            }
-            mPosts.addAll(newPosts);
-            mAdapter.notifyDataSetChanged();
-
-            if (mList.getEmptyView() == null && getView() != null){
-                TextView emptyView = (TextView) getView().findViewById(android.R.id.empty);
-                mList.setEmptyView(emptyView);
-            }
         }
     }
 }

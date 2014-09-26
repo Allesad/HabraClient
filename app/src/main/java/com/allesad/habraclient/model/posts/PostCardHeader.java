@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.allesad.habraclient.R;
+import com.allesad.habraclient.interfaces.models.posts.IPost;
 
 import it.gmariotti.cardslib.library.internal.CardHeader;
 
@@ -14,9 +15,9 @@ import it.gmariotti.cardslib.library.internal.CardHeader;
  */
 public class PostCardHeader extends CardHeader {
 
-    private PostListItemData mPost;
+    private IPost mPost;
 
-    public PostCardHeader(Context context, PostListItemData post) {
+    public PostCardHeader(Context context, IPost post) {
         super(context, R.layout.view_post_header_inner_layout);
 
         mPost = post;
@@ -34,10 +35,10 @@ public class PostCardHeader extends CardHeader {
             TextView title = (TextView) view.findViewById(R.id.postHeaderInnerView_title);
             TextView hubs = (TextView) view.findViewById(R.id.postHeaderInnerView_hubs);
 
-            date.setText(mPost.getDateFormatted());
-            author.setText(mPost.getAuthor());
-            title.setText(mPost.getTitle());
-            hubs.setText(mPost.getHubs());
+            date.setText("Сегодня в 16:30");
+            author.setText(mPost.getPost_author());
+            title.setText(mPost.getPost_title());
+            hubs.setText("Hubs");
         }
     }
 }

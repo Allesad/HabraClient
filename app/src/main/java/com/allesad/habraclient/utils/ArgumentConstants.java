@@ -7,6 +7,7 @@ public class ArgumentConstants {
 
     /* POST */
     public final static String POST_ID = "postId";
+    public final static String POST = "postArg";
 
     /* PHOTO GALLERY */
     public final static String IMAGE_PATHS = "imagePaths";

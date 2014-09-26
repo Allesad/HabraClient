@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="theme_default_primary_light">#ffff598e</color>
-    <color name="theme_default_primary">#6da3bd</color>
-    <color name="theme_default_primary_dark">#4d7285</color>
-    <color name="theme_default_accent">#8f673ab7</color>
-    <color name="theme_default_accent_light">#8f9575cd</color>
-    <color name="theme_default_accent_dark">#8f512da8</color>
-
-    <color name="theme_background">#f2f2f2</color>
-
     <declare-styleable name="BaseAppTheme">
         <attr name="actionBarIconColor" format="color" />
     </declare-styleable>

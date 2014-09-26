@@ -1,19 +1,39 @@
 package com.allesad.habraclient.helpers;
 
+import android.text.TextUtils;
+import android.util.SparseIntArray;
+
+import com.allesad.habraclient.database.models.posts.Post;
 import com.allesad.habraclient.model.posts.CommentListItemData;
 import com.allesad.habraclient.model.posts.PostContentData;
 import com.allesad.habraclient.model.posts.PostListItemData;
 import com.allesad.habraclient.robospice.response.posts.PostContentResponse;
 import com.allesad.habraclient.robospice.response.posts.PostsListResponse;
 import com.allesad.habraclient.utils.Logger;
+import com.allesad.habraclient.utils.PrefsHelper;
 import com.allesad.habraclient.utils.Utils;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLDecoder;
+import java.util.List;
 
 /**
  * Created by Allesad on 23.03.2014.
@@ -23,73 +43,163 @@ public class RequestHelper {
     private final static String BASE_URL = "http://habrahabr.ru/";
     //private final static String BASE_URL = "178.248.233.33/";
 
+    public static void getPosts(){
+        /*String url = "https://api.habrahabr.ru/v1/top/daily?limit=10&client=" + Utils.CLIENT_ID + "&token=" + Utils.TOKEN;
+        List<NameValuePair> params = new ArrayList<NameValuePair>(2);
+        params.add(new BasicNameValuePair("client", Utils.CLIENT_ID));
+        params.add(new BasicNameValuePair("token", Utils.TOKEN));
+
+        //String result = processRequest(url, params, null);
+        //Logger.v("Request complete. Result: " + result);
+        try {
+            Connection.Response response = Jsoup.connect(url)
+                    .maxBodySize(0)
+                    .ignoreContentType(true)
+                    .execute();
+            Logger.v("Request complete. Result: " + response.body());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+    }
+
+    private static String processRequest(String url, List<NameValuePair> params, HttpEntity entity){
+        String result = "";
+
+        HttpClient httpClient = new DefaultHttpClient();
+        //HttpPost httpPost = new HttpPost(BASE_URL + url);
+        HttpPost httpPost = new HttpPost(url);
+        HttpGet request = new HttpGet();
+
+        try {
+            request.setURI(new URI(url));
+            /*if (params != null){
+                httpPost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+            }else if (entity != null){
+                httpPost.setEntity(entity);
+            }*/
+
+            Logger.v("Send request: " + url);
+
+            //HttpResponse response = httpClient.execute(httpPost);
+            HttpResponse response = httpClient.execute(request);
+
+            HttpEntity responseEntity = response.getEntity();
+
+            result = parseResponse(responseEntity);
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    private static String parseResponse(HttpEntity entity) throws IOException {
+        String result = "";
+
+        if (entity != null){
+            InputStream instream = entity.getContent();
+            InputStreamReader inputStreamReader = new InputStreamReader(instream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            StringBuilder stringBuilder = new StringBuilder();
+            String bufferedStrChunk;
+
+            while((bufferedStrChunk = bufferedReader.readLine()) != null){
+                stringBuilder.append(bufferedStrChunk);
+            }
+            result = URLDecoder.decode(stringBuilder.toString(), "UTF-8");
+            if (Utils.DEBUG){
+                Logger.v("Response: " + result);
+            }
+            instream.close();
+        }
+        return result;
+    }
+
     public static PostsListResponse getPosts(String url) throws IOException {
         PostsListResponse response = new PostsListResponse();
 
-        Document document = Jsoup.connect(url)
-                .get();
+        String phpSessionId = PrefsHelper.get().getPhpSessionId();
+        String hsecId = PrefsHelper.get().getHsecId();
+        Document document;
+
+        if (!TextUtils.isEmpty(phpSessionId) && !TextUtils.isEmpty(hsecId)){
+            document = Jsoup.connect(url)
+                    .cookie("PHPSESSID", phpSessionId)
+                    .cookie("hsec_id", hsecId)
+                    .get();
+        }else{
+            document = Jsoup.connect(url)
+                    .get();
+        }
+
 
         Elements posts = document.select("div.post");
 
-        for(Element post : posts){
-            PostListItemData postData  = new PostListItemData();
+        for(Element el : posts){
+            Post post  = new Post();
 
-            Integer postId          = Integer.parseInt(post.attr("id").replace("post_", ""));
-            Element postTitle       = post.select("a.post_title").first();
-            Element habracut        = post.select("div.content").first();
+            Integer postId          = Integer.parseInt(el.attr("id").replace("post_", ""));
+            Element postTitle       = el.select("a.post_title").first();
+            Element habracut        = el.select("div.content").first();
             Element postImage       = habracut.select("img").first();
-            Element hubs            = post.select("div.hubs").first();
+            Element hubs            = el.select("div.hubs").first();
             //Element date            = post.select("div.published").first();
-            Element originalAuthor  = post.select("div.original-author > a").first();
-            Element author          = post.select("div.author > a").first();
-            Element views           = post.select("div.pageviews").first();
-            Element comments        = post.select("div.comments > a span.all").first();
-            Element newComments     = post.select("div.comments > a span.new").first();
-            Element rating          = post.select("div.mark").first();
-            Element favorites       = post.select("div.favs_count").first();
+            Element originalAuthor  = el.select("div.original-author > a").first();
+            Element author          = el.select("div.author > a").first();
+            Element views           = el.select("div.pageviews").first();
+            Element comments        = el.select("div.comments > a span.all").first();
+            Element newComments     = el.select("div.comments > a span.new").first();
+            Element rating          = el.select("div.mark").first();
+            Element favorites       = el.select("div.favs_count").first();
             /*Element score           = post.select("div.mark > span.score").first();
             Element flag            = post.select(".flag").first();
             Element favoriteMark    = post.select("div.favorite").first();*/
 
-            postData.setId(postId);
+            post.id = postId;
             //postsData.setVisited(visitedPostsIds.indexOf(postId) != -1);
-            postData.setImage(postImage != null ? postImage.absUrl("src") : "");
+            post.titleImage = postImage != null ? postImage.absUrl("src") : "";
+
             if (postTitle != null){
-                postData.setTitle(postTitle.text());
-                postData.setUrl(postTitle.attr("abs:href"));
+                post.title = postTitle.text();
+                post.url = postTitle.attr("abs:href");
             }
             if (habracut != null){
                 habracut.select("img").remove();
-                postData.setHabracut(habracut.html());
                 String[] cutWords = habracut.text().split("\\s+");
                 int wordsNumber = cutWords.length < 30 ? cutWords.length : 30;
                 String[] shortHabracutWords = new String[wordsNumber];
                 for (int i = 0; i < wordsNumber; i++){
                     shortHabracutWords[i] = cutWords[i];
                 }
-                postData.setHabracut(Utils.arrayToString(shortHabracutWords, " "));
+                post.habracut = Utils.arrayToString(shortHabracutWords, " ");
             }
-            postData.setHubs(hubs != null ? hubs.text() : "");
-            postData.setViews(views != null ? Integer.parseInt(views.text()) : 0);
-            postData.setFavoritesCount(favorites != null && !favorites.text().equals("") ? Integer.parseInt(favorites.text().trim()) : 0);
-            postData.setDate(System.currentTimeMillis());
+            //post.setHubs(hubs != null ? hubs.text() : "");
+            post.viewsCount = views != null ? Integer.parseInt(views.text()) : 0;
+            post.favoritesCount = favorites != null && !favorites.text().equals("") ? Integer.parseInt(favorites.text().trim()) : 0;
+            post.date = System.currentTimeMillis();
             if (originalAuthor != null){
-                postData.setOriginalAuthor(originalAuthor.text());
-                postData.setOriginalUrl(originalAuthor.attr("abs:href"));
+                post.originalAuthor = originalAuthor.text();
+                post.originalUrl = originalAuthor.attr("abs:href");
             }
             if (author != null){
-                postData.setAuthor(author.text());
-                postData.setAuthorUrl(author.attr("abs:href"));
+                post.author = author.text();
+                post.authorUrl = author.attr("abs:href");
             }
-            if (comments != null)   postData.setCommentsCount(!comments.text().equals("Комментировать") ? Integer.parseInt(comments.text()) : 0);
-            postData.setNewCommentsCount(newComments != null ? Integer.parseInt(newComments.text().replace("+", "")) : -1);
+            if (comments != null){
+                post.commentsCount = !comments.text().equals("Комментировать") ? Integer.parseInt(comments.text()) : 0;
+            }
+            post.newCommentsCount = newComments != null ? Integer.parseInt(newComments.text().replace("+", "")) : -1;
             if (rating != null){
                 if (!rating.text().equals("—")){
                     int parsedRating = Integer.parseInt(rating.text().replaceAll("\\D", ""));
                     if (rating.text().startsWith("—")){
                         parsedRating = -parsedRating;
                     }
-                    postData.setRating(parsedRating);
+                    post.rating = parsedRating;
                 }
             }
 
@@ -112,7 +222,7 @@ public class RequestHelper {
                 postsData.setFavorite(favoriteMark.select("a").first().hasClass("remove") ? true : false);
             }*/
 
-            response.add(postData);
+            response.add(post);
         }
 
         return response;
@@ -185,6 +295,7 @@ public class RequestHelper {
 
             // Parse comments
             Elements comments = document.select("div.comment_item");
+            SparseIntArray levelMap = new SparseIntArray();
 
             for (Element comment : comments){
                 CommentListItemData commentData = new CommentListItemData();
@@ -204,6 +315,13 @@ public class RequestHelper {
                 //Element voting = comment.select("div.voting").first();
 
                 commentData.setParentCommentId(parentId != null ? Integer.parseInt(parentId.attr("data-parent_id")) : 0);
+
+                Integer level = levelMap.get(commentData.getParentCommentId());
+                if (level != null){
+                    commentData.setLevel(level + 1);
+                }
+                levelMap.append(commentData.getCommentId(), commentData.getLevel());
+
                 commentData.setParentPostId(postId);
                 if (name != null){
                     commentData.setAuthor(name.text());

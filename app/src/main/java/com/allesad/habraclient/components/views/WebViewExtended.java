@@ -1,4 +1,4 @@
-package com.allesad.habraclient.components;
+package com.allesad.habraclient.components.views;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -74,12 +74,16 @@ public class WebViewExtended extends WebView {
     }
 
     public void loadPost(PostContentData post){
+        /*Logger.v("Load post start");
+        long start = System.currentTimeMillis();
         String content = post.getContent();
         content = parseDocument(content);
         content = addTitleInfo(post, content);
         content = applyWrapperInfo(content);
+        long duration = System.currentTimeMillis() - start;
+        Logger.v("Load end. Duration: " + duration + "ms");*/
 
-        super.loadDataWithBaseURL("file:///android_asset/", content, "text/html", "UTF-8", null);
+        super.loadDataWithBaseURL("file:///android_asset/", post.getContent(), "text/html", "UTF-8", null);
     }
 
     public void loadComment(CommentListItemData comment){
@@ -127,13 +131,11 @@ public class WebViewExtended extends WebView {
             image.setBaseUri("http://beta.hstor.org/");
             String url = image.absUrl("src");
             url = url.replace("http://habrastorage.org", "http://beta.hstor.org");
-            Logger.v("Image URL: " + url);
             image.attr("src", url);
             if (!TextUtils.isEmpty(url)){
                 mImagePaths.add(url);
             }
         }
-        Logger.v("Content: " + document.body().html());
 
         // Find all youtube frames on the page and replace them with video preview
         Elements iframes = document.select("iframe");
@@ -143,7 +145,6 @@ public class WebViewExtended extends WebView {
                 String videoId = iframe.attr("src").substring(iframe.attr("src").lastIndexOf("/") + 1);
                 videoId = videoId.substring(0, videoId.indexOf("?"));
                 String videoUrl = "http://www.youtube.com/watch?v=" + videoId;
-                Logger.v("Video url is: " + videoUrl);
                 iframe.wrap("<a href='" + videoUrl + "'><img src='http://img.youtube.com/vi/" + videoId + "/0.jpg'></img></a>");
                 iframe.remove();
             }
@@ -180,7 +181,6 @@ public class WebViewExtended extends WebView {
             }
         }
 
-        //Logger.v("Page HTML is: " + data);
         return document.body().html();
     }
 

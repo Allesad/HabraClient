@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.allesad.habraclient.R;
 import com.allesad.habraclient.components.HtmlTagHandler;
-import com.allesad.habraclient.components.WebViewExtended;
+import com.allesad.habraclient.components.views.WebViewExtended;
 import com.allesad.habraclient.model.posts.CommentListItemData;
 import com.allesad.habraclient.utils.Utils;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -43,6 +43,11 @@ public class PostCommentsAdapter2 extends RecyclerView.Adapter<PostCommentsAdapt
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         CommentListItemData comment = mComments.get(i);
+
+        int marginStep = mContext.getResources().getDimensionPixelSize(R.dimen.comment_left_margin_step);
+        RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) viewHolder.itemView.getLayoutParams();
+        layoutParams.leftMargin = comment.getLevel() * marginStep;
+        viewHolder.itemView.setLayoutParams(layoutParams);
 
         ImageLoader.getInstance().displayImage(comment.getAvatarUrl(), viewHolder.avatar);
         viewHolder.author.setText(comment.getAuthor());

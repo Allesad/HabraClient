@@ -2,6 +2,8 @@ package com.allesad.habraclient.model.posts;
 
 import android.content.Context;
 
+import com.allesad.habraclient.interfaces.models.posts.IPost;
+
 import it.gmariotti.cardslib.library.internal.CardExpand;
 
 /**
@@ -9,9 +11,9 @@ import it.gmariotti.cardslib.library.internal.CardExpand;
  */
 public class PostCardExpand extends CardExpand {
 
-    private PostListItemData mPost;
+    private IPost mPost;
 
-    public PostCardExpand(Context context, PostListItemData post) {
+    public PostCardExpand(Context context, IPost post) {
         super(context);
 
         mPost = post;

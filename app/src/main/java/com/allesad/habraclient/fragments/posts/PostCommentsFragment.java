@@ -8,19 +8,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.allesad.habraclient.R;
-import com.allesad.habraclient.adapters.posts.PostCommentsAdapter;
 import com.allesad.habraclient.adapters.posts.PostCommentsAdapter2;
 import com.allesad.habraclient.events.PostEvent;
 import com.allesad.habraclient.fragments.BaseSpicedFragment;
 import com.allesad.habraclient.model.posts.CommentListItemData;
+import com.allesad.habraclient.model.posts.PostContentData;
+import com.allesad.habraclient.utils.ArgumentConstants;
 import com.allesad.habraclient.utils.Logger;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,17 +39,24 @@ public class PostCommentsFragment extends BaseSpicedFragment implements AdapterV
     //private PostCommentsAdapter mAdapter;
     private PostCommentsAdapter2 mAdapter;
 
+    private PostContentData mPost;
+
     private List<CommentListItemData> mComments;
 
     //=============================================================
     // Static initializer
     //=============================================================
 
-    public static PostCommentsFragment newInstance() {
-        return new PostCommentsFragment();
-    }
-    public PostCommentsFragment() {
-        // Required empty public constructor
+    public static PostCommentsFragment newInstance(PostContentData post) {
+        PostCommentsFragment f = new PostCommentsFragment();
+
+        Bundle args = new Bundle();
+        if (post != null){
+            args.putSerializable(ArgumentConstants.POST, post);
+        }
+        f.setArguments(args);
+
+        return f;
     }
 
     //=============================================================
@@ -76,7 +80,7 @@ public class PostCommentsFragment extends BaseSpicedFragment implements AdapterV
         /*TextView emptyView = (TextView) view.findViewById(android.R.id.empty);
         mCommentsList.setEmptyView(emptyView);
 
-        mCommentsList.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), true, true));*/
+        mCommentsList.setOnScrollListener(new PauseOnScrollListener(ImageLoader.get(), true, true));*/
     }
 
     @Override
@@ -84,6 +88,13 @@ public class PostCommentsFragment extends BaseSpicedFragment implements AdapterV
         super.onActivityCreated(savedInstanceState);
 
         setUpCommentsList();
+
+        if (savedInstanceState != null){
+            mPost = (PostContentData) savedInstanceState.getSerializable(ArgumentConstants.POST);
+            if (mPost != null){
+                showComments(mPost);
+            }
+        }
     }
 
     @Override
@@ -99,7 +110,14 @@ public class PostCommentsFragment extends BaseSpicedFragment implements AdapterV
 
         super.onPause();
     }
-    
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putSerializable(ArgumentConstants.POST, mPost);
+    }
+
     //=============================================================
     // AdapterView.OnItemClickListener
     //=============================================================
@@ -123,12 +141,8 @@ public class PostCommentsFragment extends BaseSpicedFragment implements AdapterV
 
     public void onEvent(PostEvent event){
         if (event.getPost() != null){
-            mComments.clear();
-            mComments.addAll(event.getPost().getComments());
-            mAdapter.notifyDataSetChanged();
-
-            mProgressBar.setVisibility(View.GONE);
-            mCommentsList.setVisibility(View.VISIBLE);
+            mPost = event.getPost();
+            showComments(mPost);
         }
     }
 
@@ -145,5 +159,14 @@ public class PostCommentsFragment extends BaseSpicedFragment implements AdapterV
         }
         mCommentsList.setAdapter(mAdapter);
         //mCommentsList.setOnItemClickListener(this);
+    }
+
+    private void showComments(PostContentData post){
+        mComments.clear();
+        mComments.addAll(post.getComments());
+        mAdapter.notifyDataSetChanged();
+
+        mProgressBar.setVisibility(View.GONE);
+        mCommentsList.setVisibility(View.VISIBLE);
     }
 }

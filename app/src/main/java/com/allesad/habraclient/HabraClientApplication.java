@@ -1,6 +1,7 @@
 package com.allesad.habraclient;
 
 import android.app.Application;
+import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.allesad.habraclient.utils.ImageDownloaderExtended;
@@ -14,9 +15,13 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
  */
 public class HabraClientApplication extends Application {
 
+    private static Context mAppContext;
+
     @Override
     public void onCreate() {
         super.onCreate();
+
+        mAppContext = getApplicationContext();
 
         int stubImageResource = R.drawable.ic_no_image;
         DisplayImageOptions imageOptions = new DisplayImageOptions.Builder()
@@ -35,5 +40,9 @@ public class HabraClientApplication extends Application {
                 .build();
 
         ImageLoader.getInstance().init(configuration);
+    }
+
+    public static Context getAppContext(){
+        return mAppContext;
     }
 }

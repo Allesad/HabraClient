@@ -1,0 +1,64 @@
+#
+# generated on 2014/09/20 11:07:56
+#
+# --table-start--
+dataClass=com.allesad.habraclient.database.models.posts.Post
+tableName=posts
+# --table-fields-start--
+# --field-start--
+fieldName=id
+canBeNull=false
+id=true
+# --field-end--
+# --field-start--
+fieldName=url
+# --field-end--
+# --field-start--
+fieldName=title
+# --field-end--
+# --field-start--
+fieldName=titleImage
+# --field-end--
+# --field-start--
+fieldName=habracut
+# --field-end--
+# --field-start--
+fieldName=content
+# --field-end--
+# --field-start--
+fieldName=author
+# --field-end--
+# --field-start--
+fieldName=authorUrl
+# --field-end--
+# --field-start--
+fieldName=originalAuthor
+# --field-end--
+# --field-start--
+fieldName=originalUrl
+# --field-end--
+# --field-start--
+fieldName=date
+# --field-end--
+# --field-start--
+fieldName=viewsCount
+# --field-end--
+# --field-start--
+fieldName=favoritesCount
+# --field-end--
+# --field-start--
+fieldName=commentsCount
+# --field-end--
+# --field-start--
+fieldName=newCommentsCount
+# --field-end--
+# --field-start--
+fieldName=rating
+# --field-end--
+# --field-start--
+fieldName=comments
+foreignCollection=true
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################

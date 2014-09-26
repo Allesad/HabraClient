@@ -18,7 +18,7 @@ public class IntentHelper {
 
     }
 
-    public static void toPostContentScreen(Context context, int postId){
+    public static void toPostContentScreen(Context context, long postId){
         Intent intent = new Intent(context, PostContentActivity.class);
         intent.putExtra(ArgumentConstants.POST_ID, postId);
         context.startActivity(intent);

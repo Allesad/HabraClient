@@ -84,7 +84,7 @@
             android:text="У меня опыта разработки под Android всего два месяца, поэтому могу порой принимать странные решения. :) Спасибо за объяснение, посмотрю в сторону Picasso и других библиотек."
             />
 
-        <com.allesad.habraclient.components.WebViewExtended
+        <com.allesad.habraclient.components.views.WebViewExtended
             android:id="@+id/commentView_full_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
