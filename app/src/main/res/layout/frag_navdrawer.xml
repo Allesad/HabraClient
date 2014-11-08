@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/navdrawer"
+    android:layout_width="@dimen/navdrawer_width"
+    android:layout_height="match_parent"
+    android:background="@color/navdrawer_bg"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:paddingLeft="@dimen/default_side_padding"
+            android:paddingRight="@dimen/default_side_padding"
+            android:background="@color/color_primary">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="@dimen/default_top_bottom_padding"
+                >
+
+                <com.allesad.habraclient.components.widgets.BezelImageView
+                    xmlns:biv="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/navdrawerView_avatar"
+                    android:layout_width="@dimen/default_avatar_size"
+                    android:layout_height="@dimen/default_avatar_size"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/default_navdrawer_icon_margin_right"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/avatar"
+                    biv:maskDrawable="@drawable/circle_mask"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/navdrawerView_avatar"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:textSize="@dimen/font_size_large"
+                    android:textColor="@color/color_accent"
+                    android:textStyle="bold"
+                    android:text="Allesad"
+                    />
+
+                <View
+                    android:id="@+id/navdrawerView_center"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignParentBottom="true"
+                    />
+
+                <TextView
+                    android:id="@+id/navdrawerView_karma"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@id/navdrawerView_center"
+                    android:gravity="center"
+                    android:textSize="@dimen/font_size_large"
+                    android:textColor="@color/karma_text_color"
+                    android:text="23,0"
+                    />
+
+                <TextView
+                    android:id="@+id/navdrawerView_rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_toRightOf="@id/navdrawerView_center"
+                    android:gravity="center"
+                    android:textSize="@dimen/font_size_large"
+                    android:textColor="@color/rating_text_color"
+                    android:text="326,1"
+                    />
+
+            </RelativeLayout>
+
+        </FrameLayout>
+
+        <!-- Drawer items -->
+        <LinearLayout
+            android:id="@+id/navdrawer_items_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

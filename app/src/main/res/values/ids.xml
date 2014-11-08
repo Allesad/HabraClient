@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Common -->
+    <item name="pager" type="id"/>
+    <item name="sliding_tabs" type="id"/>
+</resources>

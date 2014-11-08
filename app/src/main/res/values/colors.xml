@@ -1,0 +1,50 @@
+<resources>
+    <!-- PALETTE -->
+
+    <!--<color name="theme_default_primary">#FF6da3bd</color>
+    <color name="theme_default_primary_dark">#FF4d7285</color>
+    <color name="theme_default_accent">#FF673ab7</color>-->
+    <color name="color_primary">#FF5C6BC0</color>
+    <color name="color_primary_dark">#FF303F9F</color>
+    <color name="color_primary_light">#FF7986CB</color>
+    <color name="color_accent">#FFF50057</color>
+
+    <!--<color name="theme_default_accent_light">#FF9575cd</color>
+    <color name="theme_default_accent_dark">#FF512da8</color>
+    <color name="theme_background">#FFf2f2f2</color>-->
+    <!--<color name="green">#FF339900</color>-->
+    <color name="green">#FF00C853</color>
+    <color name="purple">#FF6200EA</color>
+    <color name="red">#FFcc0000</color>
+    <color name="grey">#FF777777</color>
+    <color name="light_gray">#FFe5e5e5</color>
+
+    <color name="text_color_1">#de000000</color>
+    <color name="text_color_2">#8a000000</color>
+    <color name="text_color_3">#60000000</color>
+
+    <!-- NAVIGATION DRAWER -->
+    <color name="navdrawer_bg">@android:color/white</color>
+    <color name="separator_color">@color/light_gray</color>
+    <color name="navdrawer_section_text_color">@color/text_color_3</color>
+    <color name="navdrawer_text_color">@color/text_color_1</color>
+    <color name="navdrawer_text_color_selected">@color/color_accent</color>
+    <color name="navdrawer_icon_tint">#888</color>
+    <color name="navdrawer_icon_tint_selected">@color/color_accent</color>
+
+    <!-- PROFILE -->
+    <!--<color name="karma_text_color">#FF66cc66</color>
+    <color name="rating_text_color">#FFcc66cc</color>-->
+    <color name="karma_text_color">@color/green</color>
+    <color name="rating_text_color">@color/purple</color>
+
+    <!-- REFERENCES -->
+
+    <color name="black_overlay">#66000000</color>
+    <color name="light_text_color">@color/grey</color>
+
+    <!-- RATING -->
+    <color name="rating_negative">@color/red</color>
+    <color name="rating_positive">@color/green</color>
+
+</resources>

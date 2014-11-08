@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <TextView
+        android:id="@+id/postInnerView_habracut"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:text="@string/test_habracut"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@android:style/Holo.Light.ButtonBar"
+        >
+
+        <TextView
+            android:id="@+id/postInnerView_rating"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="?android:attr/buttonBarButtonStyle"
+            android:padding="4dp"
+            android:gravity="center"
+            android:text="+453"
+            />
+
+        <TextView
+            android:id="@+id/postInnerView_views"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:layout_weight="1"
+            style="?android:attr/buttonBarButtonStyle"
+            android:gravity="center"
+            android:text="8684"
+            />
+
+        <TextView
+            android:id="@+id/postInnerView_favorites"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:layout_weight="1"
+            style="?android:attr/buttonBarButtonStyle"
+            android:gravity="center"
+            android:text="213"
+            />
+
+        <TextView
+            android:id="@+id/postInnerView_comments"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:layout_weight="1"
+            style="?android:attr/buttonBarButtonStyle"
+            android:gravity="center"
+            android:text="110+14"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>
