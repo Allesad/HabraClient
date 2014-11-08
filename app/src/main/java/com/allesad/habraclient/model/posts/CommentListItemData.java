@@ -19,6 +19,7 @@ public class CommentListItemData implements Serializable {
     private int rating;
     private String content;
     private long date;
+    private String dateString;
     private int level;
 
     private boolean showFullContent;
@@ -116,6 +117,14 @@ public class CommentListItemData implements Serializable {
 
     public void setDate(long date) {
         this.date = date;
+    }
+
+    public String getDateString(){
+        return dateString;
+    }
+
+    public void setDateString(String dateString){
+        this.dateString = dateString;
     }
 
     public void setLevel(int level){

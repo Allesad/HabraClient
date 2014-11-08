@@ -13,7 +13,7 @@ import com.allesad.habraclient.adapters.gallery.PhotoGalleryPagerAdapter;
 import com.allesad.habraclient.components.ViewPagerExtended;
 import com.allesad.habraclient.utils.ArgumentConstants;
 
-public class PhotoGalleryActivity extends Activity implements ViewPager.OnPageChangeListener {
+public class PhotoGalleryActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide

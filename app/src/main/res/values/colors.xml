@@ -2,15 +2,20 @@
     <!-- PALETTE -->
 
     <color name="theme_default_primary_light">#ffff598e</color>
-    <color name="theme_default_primary">#6da3bd</color>
-    <color name="theme_default_primary_dark">#4d7285</color>
-    <color name="theme_default_accent">#8f673ab7</color>
-    <color name="theme_default_accent_light">#8f9575cd</color>
-    <color name="theme_default_accent_dark">#8f512da8</color>
-    <color name="theme_background">#f2f2f2</color>
-    <color name="green">#339900</color>
-    <color name="red">#cc0000</color>
+    <color name="theme_default_primary">#FF6da3bd</color>
+    <color name="theme_default_primary_dark">#FF4d7285</color>
+    <color name="theme_default_accent">#FF673ab7</color>
+    <color name="theme_default_accent_light">#FF9575cd</color>
+    <color name="theme_default_accent_dark">#FF512da8</color>
+    <color name="theme_background">#FFf2f2f2</color>
+    <color name="green">#FF339900</color>
+    <color name="red">#FFcc0000</color>
     <color name="grey">#FF777777</color>
+    <color name="light_gray">#FFe5e5e5</color>
+
+    <!-- NAVIGATION DRAWER -->
+    <color name="navdrawer_bg">@android:color/white</color>
+    <color name="separator_color">@color/light_gray</color>
 
     <!-- REFERENCES -->
 

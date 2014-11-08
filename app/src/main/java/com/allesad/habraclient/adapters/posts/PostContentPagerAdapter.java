@@ -17,11 +17,13 @@ public class PostContentPagerAdapter extends FragmentStatePagerAdapter {
     private final static int TAB_CONTENT = 0;
     private final static int TAB_COMMENTS = 1;
 
+    private int mPostId;
     private PostContentData mPost;
 
-    public PostContentPagerAdapter(FragmentManager fm, PostContentData post) {
+    public PostContentPagerAdapter(FragmentManager fm, PostContentData post, int postId) {
         super(fm);
 
+        mPostId = postId;
         mPost = post;
     }
 
@@ -32,7 +34,7 @@ public class PostContentPagerAdapter extends FragmentStatePagerAdapter {
             case TAB_CONTENT:
                 return PostContentFragment.newInstance(mPost);
             case TAB_COMMENTS:
-                return PostCommentsFragment.newInstance(mPost);
+                return PostCommentsFragment.newInstance(mPost, mPostId);
         }
         return null;
     }

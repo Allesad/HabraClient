@@ -86,12 +86,12 @@ public class PostContentActivity extends BaseActivity implements ISpiceManagerPr
             triggerContentUpdate();
         }
 
-        PostContentPagerAdapter adapter = new PostContentPagerAdapter(getSupportFragmentManager(), mPost);
+        PostContentPagerAdapter adapter = new PostContentPagerAdapter(getSupportFragmentManager(), mPost, postId);
         ViewPagerExtended pager = (ViewPagerExtended) findViewById(R.id.pager);
         pager.setAdapter(adapter);
 
-        getActionBar().setDisplayShowHomeEnabled(true);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        /*getActionBar().setDisplayShowHomeEnabled(true);
+        getActionBar().setDisplayHomeAsUpEnabled(true);*/
     }
 
     @Override

@@ -16,8 +16,14 @@ import com.allesad.habraclient.events.PostEvent;
 import com.allesad.habraclient.fragments.BaseSpicedFragment;
 import com.allesad.habraclient.model.posts.CommentListItemData;
 import com.allesad.habraclient.model.posts.PostContentData;
+import com.allesad.habraclient.robospice.requests.posts.PostCommentsRequest;
+import com.allesad.habraclient.robospice.response.posts.CommentsListResponse;
+import com.allesad.habraclient.robospice.response.posts.PostContentResponse;
 import com.allesad.habraclient.utils.ArgumentConstants;
+import com.allesad.habraclient.utils.DialogUtil;
 import com.allesad.habraclient.utils.Logger;
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,19 +47,21 @@ public class PostCommentsFragment extends BaseSpicedFragment implements AdapterV
 
     private PostContentData mPost;
 
+    private int mPostId;
     private List<CommentListItemData> mComments;
 
     //=============================================================
     // Static initializer
     //=============================================================
 
-    public static PostCommentsFragment newInstance(PostContentData post) {
+    public static PostCommentsFragment newInstance(PostContentData post, int postId) {
         PostCommentsFragment f = new PostCommentsFragment();
 
         Bundle args = new Bundle();
         if (post != null){
             args.putSerializable(ArgumentConstants.POST, post);
         }
+        args.putInt(ArgumentConstants.POST_ID, postId);
         f.setArguments(args);
 
         return f;
@@ -62,6 +70,14 @@ public class PostCommentsFragment extends BaseSpicedFragment implements AdapterV
     //=============================================================
     // Fragment lifecycle
     //=============================================================
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mPostId = getArguments().getInt(ArgumentConstants.POST_ID, 0);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -89,24 +105,25 @@ public class PostCommentsFragment extends BaseSpicedFragment implements AdapterV
 
         setUpCommentsList();
 
-        if (savedInstanceState != null){
+        getSpiceManager().execute(new PostCommentsRequest(mPostId), new CommentsRequestListener());
+        /*if (savedInstanceState != null){
             mPost = (PostContentData) savedInstanceState.getSerializable(ArgumentConstants.POST);
             if (mPost != null){
                 showComments(mPost);
             }
-        }
+        }*/
     }
 
     @Override
     public void onStart() {
         super.onStart();
 
-        EventBus.getDefault().register(this);
+        //EventBus.getDefault().register(this);
     }
 
     @Override
     public void onPause() {
-        EventBus.getDefault().unregister(this);
+        //EventBus.getDefault().unregister(this);
 
         super.onPause();
     }
@@ -140,10 +157,10 @@ public class PostCommentsFragment extends BaseSpicedFragment implements AdapterV
     //=============================================================
 
     public void onEvent(PostEvent event){
-        if (event.getPost() != null){
+        /*if (event.getPost() != null){
             mPost = event.getPost();
             showComments(mPost);
-        }
+        }*/
     }
 
     //=============================================================
@@ -168,5 +185,32 @@ public class PostCommentsFragment extends BaseSpicedFragment implements AdapterV
 
         mProgressBar.setVisibility(View.GONE);
         mCommentsList.setVisibility(View.VISIBLE);
+    }
+
+    private class CommentsRequestListener implements RequestListener<CommentsListResponse> {
+
+        @Override
+        public void onRequestFailure(SpiceException spiceException) {
+            if (getActivity() != null){
+                DialogUtil.showAlertDialog(getActivity(), spiceException.getMessage());
+            }
+        }
+
+        @Override
+        public void onRequestSuccess(CommentsListResponse response) {
+            if (getActivity() == null){
+                return;
+            }
+
+            if (response.isSuccess()){
+                mComments.clear();
+                mComments.addAll(response.getComments());
+
+                mAdapter.notifyDataSetChanged();
+
+                mProgressBar.setVisibility(View.GONE);
+                mCommentsList.setVisibility(View.VISIBLE);
+            }
+        }
     }
 }

@@ -6,7 +6,7 @@ import android.util.SparseIntArray;
 import com.allesad.habraclient.database.models.posts.Post;
 import com.allesad.habraclient.model.posts.CommentListItemData;
 import com.allesad.habraclient.model.posts.PostContentData;
-import com.allesad.habraclient.model.posts.PostListItemData;
+import com.allesad.habraclient.robospice.response.posts.CommentsListResponse;
 import com.allesad.habraclient.robospice.response.posts.PostContentResponse;
 import com.allesad.habraclient.robospice.response.posts.PostsListResponse;
 import com.allesad.habraclient.utils.Logger;
@@ -22,6 +22,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.jsoup.Jsoup;
+import org.jsoup.helper.StringUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -33,14 +34,16 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Allesad on 23.03.2014.
  */
 public class RequestHelper {
 
-    private final static String BASE_URL = "http://habrahabr.ru/";
+    private final static String BASE_URL = "http://m.habrahabr.ru/";
     //private final static String BASE_URL = "178.248.233.33/";
 
     public static void getPosts(){
@@ -242,13 +245,13 @@ public class RequestHelper {
         Document document = Jsoup.connect(url)
                 .get();
 
-        Element post = document.select("div.post").first();
+        Element post = document.select("div.post_show").first();
 
         if (post != null){
-            Element title           = post.select("span.post_title").first();
+            Element title           = post.select("h3.title").first();
             Element imagePreview    = post.select("div.content img").first();
             Element hubs            = post.select("div.hubs").first();
-            Element content         = post.select("div.content").first();
+            Element content         = post.select("div.text").first();
             //Element date            = post.select("div.published").first();
             Element author          = post.select("div.author > a").first();
             Element originalAuthor  = post.select("div.original-author > a").first();
@@ -261,9 +264,7 @@ public class RequestHelper {
             //Element favoriteMark    = post.select("div.favorite").first();
             Element favoriteCount   = post.select("div.favs_count").first();
 
-            int postId = Integer.parseInt(post != null ? post.attr("id").replace("post_", "") : "");
-
-            postData.setId(postId);
+            postData.setId(id);
             postData.setTitle(title != null ? title.text() : "");
             postData.setImage(imagePreview != null ? imagePreview.absUrl("src") : "");
             postData.setHubs(hubs != null ? hubs.text() : "");
@@ -294,7 +295,7 @@ public class RequestHelper {
             );
 
             // Parse comments
-            Elements comments = document.select("div.comment_item");
+            /*Elements comments = document.select("div.comment_item");
             SparseIntArray levelMap = new SparseIntArray();
 
             for (Element comment : comments){
@@ -322,7 +323,7 @@ public class RequestHelper {
                 }
                 levelMap.append(commentData.getCommentId(), commentData.getLevel());
 
-                commentData.setParentPostId(postId);
+                commentData.setParentPostId(id);
                 if (name != null){
                     commentData.setAuthor(name.text());
                     commentData.setAuthorUrl(name.attr("abs:href"));
@@ -341,13 +342,72 @@ public class RequestHelper {
                 commentData.setContent(message != null ? message.html() : "");
                 //commentData.setDate(System.currentTimeMillis());
                 postData.getComments().add(commentData);
-            }
+            }*/
         }
 
         response.setPost(postData);
         response.setSuccess(true);
 
-        Logger.v("Load time: " + (System.currentTimeMillis() - startTime) + "ms");
+        Logger.v("Post load time: " + (System.currentTimeMillis() - startTime) + "ms");
+
+        return response;
+    }
+
+    public static CommentsListResponse getComments(int postId) throws IOException {
+        CommentsListResponse response = new CommentsListResponse();
+
+        List<CommentListItemData> commentItems = new ArrayList<CommentListItemData>();
+        response.setComments(commentItems);
+
+        String url = BASE_URL + "post/" + postId + "/comments/";
+
+        long startTime = System.currentTimeMillis();
+
+        Document document = Jsoup.connect(url)
+                .get();
+
+        Elements comments = document.select("div.comment_item");
+
+        CommentListItemData commentItem;
+        for (Element comment : comments) {
+            commentItem = new CommentListItemData();
+
+            Element meta = comment.select("div.meta").first();
+            Element username = meta.select("span.username").first();
+            Element date = meta.select("a.time").first();
+            Element rating = meta.select("span.score").first();
+            Element content = comment.select("div.text_html").first();
+
+            // Set level
+            Set<String> commentClasses = comment.classNames();
+            for (String className : commentClasses) {
+                if (!className.equals("comment") && className.startsWith("l")){
+                    int intValue = Integer.parseInt(className.substring(1, className.length()));
+                    int level = intValue % 10;
+                    commentItem.setLevel(level);
+                }
+            }
+
+            commentItem.setAuthor(username.text());
+            commentItem.setDate(System.currentTimeMillis());
+            commentItem.setDateString(date.text());
+            if (rating != null){
+                int parsedRating = Integer.parseInt(rating.text().replaceAll("\\D", ""));
+                // Check if string contains negative mark.
+                // CAUTION: special char with hashcode 8211 used instead of simple minus ("-") char with code 45
+                if (rating.text().startsWith("–")){
+                    parsedRating = -parsedRating;
+                }
+                commentItem.setRating(parsedRating);
+            }
+            commentItem.setContent(content.html());
+
+            commentItems.add(commentItem);
+        }
+
+        response.setSuccess(true);
+
+        Logger.v("Comments load time: " + (System.currentTimeMillis() - startTime) + "ms");
 
         return response;
     }
