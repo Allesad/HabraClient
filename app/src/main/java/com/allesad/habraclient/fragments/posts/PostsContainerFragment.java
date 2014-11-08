@@ -45,7 +45,7 @@ public class PostsContainerFragment extends Fragment {
         SlidingTabLayout slidingTabLayout = (SlidingTabLayout) view.findViewById(R.id.sliding_tabs);
 
         slidingTabLayout.setDistributeEvenly(true);
-        slidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.theme_default_accent_light));
+        slidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.color_accent));
 
         viewPager.setAdapter(mAdapter);
         slidingTabLayout.setViewPager(viewPager);

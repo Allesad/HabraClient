@@ -10,6 +10,7 @@ import com.allesad.habraclient.robospice.response.posts.PostContentResponse;
 import com.allesad.habraclient.utils.Logger;
 import com.octo.android.robospice.request.SpiceRequest;
 
+import org.apache.commons.lang3.text.StrBuilder;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -23,6 +24,8 @@ import java.io.IOException;
 public class PostContentRequest extends SpiceRequest<PostContentResponse> {
 
     private int mPostId;
+
+    private StrBuilder mSb;
 
     public PostContentRequest(int postId) {
         super(PostContentResponse.class);
@@ -55,10 +58,14 @@ public class PostContentRequest extends SpiceRequest<PostContentResponse> {
     //=============================================================
 
     private String formatPostContent(PostContentData post){
+        mSb = new StrBuilder();
         String content = post.getContent();
         content = parseDocument(content);
         content = addTitleInfo(post, content);
         content = applyWrapperInfo(content);
+
+        mSb.setLength(0);
+        mSb = null;
 
         return content;
     }
@@ -127,29 +134,36 @@ public class PostContentRequest extends SpiceRequest<PostContentResponse> {
     }
 
     private String addTitleInfo(PostContentData post, String content){
-        content = "<div class=\"published\">" + post.getDateFormatted() + ", " + post.getAuthor() + "</div>\n"
-                + "<h1 class=\"title\">" + post.getTitle() + "</h1>\n"
-                + "<div class=\"hubs\">" + post.getHubs() + "</div>\n"
-                + content;
+        mSb.append("<div class=\"published\">")
+                .append(post.getDateFormatted()).append(", ").append(post.getAuthor()).append("</div>\n")
+                .append("<h1 class=\"title\">").append(post.getTitle()).append("</h1>\n")
+                .append("<div class=\"hubs\">").append(post.getHubs()).append("</div>\n")
+                .append(content);
+
+        content = mSb.toString();
 
         return content;
     }
 
     private String applyWrapperInfo(String content){
-        content = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<!DOCTYPE html>\n" +
-                "<html>\n" +
-                "\t<head>\n" +
-                "\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\">\n" +
-                "\t\t<link rel=\"stylesheet\" type=\"text/css\" href=\"file:///android_asset/styles.css\"/>" +
-                "\t\t<link rel=\"stylesheet\" type=\"text/css\" href=\"file:///android_asset/syntaxHighlight.css\"/>" +
-                "\t</head>\n" +
-                "\t<body>\n" +
-                content +
-                "\t\t<script src=\"file:///android_asset/highlight.js\"></script>" +
-                "\t\t<script type=\"text/javascript\">hljs.initHighlightingOnLoad();</script>" +
-                "\t</body>\n" +
-                "</html>";
+        mSb.setLength(0);
+
+        mSb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+                .append("<!DOCTYPE html>\n")
+                .append("<html>\n")
+                .append("\t<head>\n")
+                .append("\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\">\n")
+                .append("\t\t<link rel=\"stylesheet\" type=\"text/css\" href=\"file:///android_asset/styles.css\"/>")
+                .append("\t\t<link rel=\"stylesheet\" type=\"text/css\" href=\"file:///android_asset/syntaxHighlight.css\"/>")
+                .append("\t</head>\n")
+                .append("\t<body>\n")
+                .append(content)
+                .append("\t\t<script src=\"file:///android_asset/highlight.js\"></script>")
+                .append("\t\t<script type=\"text/javascript\">hljs.initHighlightingOnLoad();</script>")
+                .append("\t</body>\n")
+                .append("</html>");
+
+        content = mSb.toString();
 
         /*
                 "\t\t<link rel=\"stylesheet\" type=\"text/css\" href=\"file:///android_asset/blackTheme.css\"/>" +*/

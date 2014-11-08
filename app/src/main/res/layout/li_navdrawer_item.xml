@@ -25,6 +25,7 @@
         android:layout_gravity="start|center_vertical"
         android:gravity="start|center_vertical"
         android:textSize="@dimen/font_size_small"
+        android:textStyle="bold"
         android:text="Nav Item"
         />
 

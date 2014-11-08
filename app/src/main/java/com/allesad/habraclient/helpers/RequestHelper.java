@@ -245,6 +245,9 @@ public class RequestHelper {
         Document document = Jsoup.connect(url)
                 .get();
 
+        Logger.v("Post load time: " + (System.currentTimeMillis() - startTime) + "ms");
+        startTime = System.currentTimeMillis();
+
         Element post = document.select("div.post_show").first();
 
         if (post != null){
@@ -348,7 +351,7 @@ public class RequestHelper {
         response.setPost(postData);
         response.setSuccess(true);
 
-        Logger.v("Post load time: " + (System.currentTimeMillis() - startTime) + "ms");
+        Logger.v("Post parsing time: " + (System.currentTimeMillis() - startTime) + "ms");
 
         return response;
     }
@@ -382,7 +385,7 @@ public class RequestHelper {
             Set<String> commentClasses = comment.classNames();
             for (String className : commentClasses) {
                 if (!className.equals("comment") && className.startsWith("l")){
-                    int intValue = Integer.parseInt(className.substring(1, className.length()));
+                    int intValue = Integer.parseInt(className.substring(1, className.length())) + 1;
                     int level = intValue % 10;
                     commentItem.setLevel(level);
                 }

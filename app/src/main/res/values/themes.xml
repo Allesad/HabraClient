@@ -6,12 +6,17 @@
     </declare-styleable>
 
     <!-- Base application theme. -->
-    <style name="BaseAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="BaseAppTheme" parent="Theme.AppCompat.Light">
         <!-- Customize your theme here. -->
-        <item name="android:colorPrimary">@color/theme_default_primary</item>
-        <item name="android:colorPrimaryDark">@color/theme_default_primary_dark</item>
+        <item name="windowActionBar">false</item>
+        <!--<item name="android:actionBarStyle">@style/MyToolbar</item>
+        <item name="actionBarStyle">@style/MyToolbar</item>-->
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark</item>
+        <item name="colorAccent">@color/color_accent</item>
+
+
         <!--<item name="android:colorBackground">@color/theme_background</item>
-        <item name="android:colorAccent">@color/theme_default_accent</item>
         <item name="android:colorControlHighlight">@color/theme_default_accent_light</item>-->
         <!--<item name="android:navigationBarColor">?android:colorPrimaryDark</item>
         <item name="android:statusBarColor">?android:colorPrimaryDark</item>
@@ -26,7 +31,6 @@
 
     <style name="MainTheme" parent="BaseAppTheme">
         <!--<item name="android:actionBarTheme">@style/MainActionBarThemeOverlay</item>
-        <item name="android:actionBarStyle">@style/MainActionBar</item>
         <item name="android:windowActionBarOverlay">false</item>
         <item name="android:windowContentOverlay">@null</item>-->
 

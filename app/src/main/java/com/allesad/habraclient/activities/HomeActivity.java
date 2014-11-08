@@ -2,6 +2,7 @@ package com.allesad.habraclient.activities;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -10,20 +11,29 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.allesad.habraclient.R;
+import com.allesad.habraclient.fragments.navigation.NavigationFragment;
 import com.allesad.habraclient.fragments.posts.PostsContainerFragment;
 
 /**
  * Copyright (C) 2014 HabraClient Project
  * Created by Alexey Sakhno aka Allesad on 11/8/2014 7:31 PM.
  */
-public class HomeActivity extends BaseActivity
+public class HomeActivity extends BaseActivity implements NavigationFragment.INavigationListener
 {
+    //=============================================================
+    // Constants
+    //=============================================================
+
+    private final static int NAVDRAWER_LAUNCH_DELAY = 250;
+
     //=============================================================
     // Variables
     //=============================================================
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
+
+    private Handler mHandler;
 
     //=============================================================
     // Activity lifecycle
@@ -45,8 +55,7 @@ public class HomeActivity extends BaseActivity
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //mDrawerLayout.openDrawer(Gravity.START);
-                mDrawerLayout.closeDrawers();
+                mDrawerLayout.openDrawer(Gravity.START);
             }
         });
 
@@ -59,6 +68,8 @@ public class HomeActivity extends BaseActivity
         );
 
         mDrawerLayout.setDrawerListener(mToggle);
+
+        mHandler = new Handler();
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container, new PostsContainerFragment())
@@ -85,5 +96,29 @@ public class HomeActivity extends BaseActivity
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    //=============================================================
+    // NavigationFragment.INavigationListener
+    //=============================================================
+
+    @Override
+    public void onNavigationItemClicked(final int itemId) {
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                goToNavDrawerItem(itemId);
+            }
+        }, NAVDRAWER_LAUNCH_DELAY);
+
+        mDrawerLayout.closeDrawer(Gravity.START);
+    }
+
+    //=============================================================
+    // Private methods
+    //=============================================================
+
+    private void goToNavDrawerItem(final int itemId){
+
     }
 }

@@ -22,6 +22,9 @@ public class Post implements IPost
     public long id;
 
     @DatabaseField
+    public Long dateCreated;
+
+    @DatabaseField
     public String url;
 
     @DatabaseField
